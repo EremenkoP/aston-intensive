@@ -36,7 +36,6 @@ class Form extends Component<{}, IForm> {
   handleSubmit = (event: SyntheticEvent) => {
     event.preventDefault();
     this.setState((prevState) => ({ submitCount: prevState.submitCount + 1 }));
-    this.setState((prevState) => ({ submitCount: prevState.submitCount + 1 }));
     this.setState({ inputValue: "" });
   };
 

@@ -1,19 +1,29 @@
-import React, { ChangeEvent, Component, SyntheticEvent } from "react";
+import React, {
+  ChangeEvent,
+  Component,
+  createRef,
+  SyntheticEvent,
+} from "react";
 
 interface IForm {
   inputValue: string;
   submitCount: number;
+  isDisabled: boolean;
 }
 
-class Form extends Component<{}, IForm> {
+class Form extends Component<{}, IForm, { inputRef: any }> {
   constructor(props: {}) {
     super(props);
     this.state = {
       inputValue: "",
       submitCount: 0,
+      isDisabled: false,
     };
     console.log("Constructor");
   }
+
+  checkingValue = "React";
+  private inputRef = createRef<HTMLInputElement>()
 
   componentDidMount() {
     console.log("componentDidMount - компонент примонтирован");
@@ -30,13 +40,21 @@ class Form extends Component<{}, IForm> {
   }
 
   handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    this.setState({ inputValue: event.target.value });
+    const value = event.target.value;
+    this.setState({
+      inputValue: value,
+      isDisabled: value === this.checkingValue,
+    });
   };
 
   handleSubmit = (event: SyntheticEvent) => {
     event.preventDefault();
     this.setState((prevState) => ({ submitCount: prevState.submitCount + 1 }));
     this.setState({ inputValue: "" });
+  };
+
+  focusEvent = (event: SyntheticEvent) => {
+      this.inputRef.current?.focus()
   };
 
   render() {
@@ -49,8 +67,17 @@ class Form extends Component<{}, IForm> {
             type="text"
             value={this.state.inputValue}
             onChange={this.handleChange}
+            ref={this.inputRef}
           />
-          <button type="submit">Отправить</button>
+          <button type="submit" disabled={this.state.isDisabled}>
+            Отправить
+          </button>
+          <button type="button" onClick={this.focusEvent}>
+            Фокус на инпут
+          </button>
+          {this.state.inputValue !== this.checkingValue && (
+            <label>Можно отправлять</label>
+          )}
         </form>
         <p>Количество отправок: {this.state.submitCount}</p>
       </div>
